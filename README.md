@@ -1,96 +1,76 @@
-# Marlin 3D Printer Firmware
-<img align="right" src="../../raw/1.1.x/buildroot/share/pixmaps/logo/marlin-250.png" />
+# [EN] ARTILLERY Genius
 
-## Marlin 1.1
+![bmp_logo](https://user-images.githubusercontent.com/34917424/157289735-4eb28a53-dccc-4e58-89a4-f4ad5035ca97.png)
+ 
+## Steps/mm
 
-Marlin 1.1 represents an evolutionary leap over Marlin 1.0.2. It is the result of over two years of effort by several volunteers around the world who have paid meticulous and sometimes obsessive attention to every detail. For this release we focused on code quality, performance, stability, and overall user experience. Several new features have also been added, many of which require no extra hardware.
+The default setting was 80.121 in X and Y, 399.778 in Z and 445 in E.  
+The decimal values did not bring more precision and anyway the printer is calibrated by M92 in the startup GCode.  
+In Z the printer is equipped with a worm screw and there is no reason to use a decimal pitch value.  
+Unjustified decimals in Z lead to impossible rounding and to a microstep management which is detrimental to the good functioning of the printer.  
+In the firmware I changed the default settings to {80,80,400,445}.  
 
-For complete Marlin documentation click over to the [Marlin Homepage <marlinfw.org>](http://marlinfw.org/), where you will find in-depth articles, how-to videos, and tutorials on every aspect of Marlin, as the site develops. For release notes, see the [Releases](https://github.com/MarlinFirmware/Marlin/releases) page.
+## Increase the precision
 
-The 1.1.x branch is home to all tagged releases of Marlin 1.1 (final version 1.1.9 – August 2018).
+In the original firmware we find MIN_STEPS_PER_SEGMENT set to 6.  
+As the printer is set to 80 steps per millimeter this represents a precision of about 0.075mm.  
+I set this value to 1 to allow a definition of 0.0125mm.  
 
-This branch will receive no further updates. All future development —including all bug fixes— will take place in the [`bugfix-2.0.x`](https://github.com/MarlinFirmware/Marlin/tree/bugfix-2.0.x) branch, which will also serve as the root for all future Marlin development. Be sure to test [`bugfix-2.0.x`](https://github.com/MarlinFirmware/Marlin/tree/bugfix-2.0.x) before reporting any bugs you find in 1.1.9.
+## Limiting temperatures
 
-Marlin 1.1.9 is the final release of the 8-bit flat version of Marlin Firmware. A monumental amount of talent and effort has gone into its production, and thanks are due to many people around the world. Throughout Marlin 1.1 development we worked closely with the community, contributors, vendors, host developers, library developers, etc. to improve the quality, configurability, and compatibility of Marlin Firmware, all while continuing to support a wide variety of Arduino-based boards.
+The original firmware allows to go up to 150° on the plate and 275° on the nozzle.  
+I was using this possibility to print ABS (135° plate) but I noticed that the equipment could suffer because of the overheating of the electronics.  
+In practice, if such high temperatures are used, the printer will behave very strangely, such as tracings that do not appear in the slicer because one of the steppers has gone to safety.  
+You can also notice that the printer stops mysteriously in the middle of a layer while the material cools down.  
 
-## Marlin 1.0.x
+After this experience I decided to limit the heating of the plate to 120° and 260° on the nozzle.  
 
-Previous releases of Marlin include [1.0.2-2](https://github.com/MarlinFirmware/Marlin/tree/1.0.2-2) (December 2016) and [1.0.1](https://github.com/MarlinFirmware/Marlin/tree/1.0.1) (December 2014). Any version of Marlin prior to 1.0.1 (when we started tagging versions) can be collectively referred to as Marlin 1.0.0.
+## Why no LIN_ADVANCE ?
 
-## Contributing to Marlin
+This feature is very attractive and was supposed to improve the quality of the prints, so I tried it.  
+Unfortunately my tests were not really successful.  
+Maybe the 8-bit motherboard doesn't have enough computing power or maybe this version of Marlin implements it badly but I didn't succeed.  
+I had activated the LIN_ADVANCE first with the K value defined in the firmware and then with K at 0 but I had tried and tried again to calibrate correctly I only noticed degradations on several tests.
+The simple activation of this function even with K at 0 led to printer malfunctions that affected even the basic menus: the printer did not respond to anything for several seconds and executed commands with delay.  
+I also tried with the deactivation of the arcs (ARC_SUPPORT G2 and G3) which allows to recover several Kb but it didn't fix anything and it amputated the firmware of functionalities which can be useful.  
+After several tests I decided not to activate this feature.  
+In this version ARC_SUPPORT is enabled and LIN_ADVANCE is not.  
 
-Click on the [Issue Queue](https://github.com/MarlinFirmware/Marlin/issues) and [Pull Requests](https://github.com/MarlinFirmware/Marlin/pulls) links above at any time to see what we're currently working on.
 
-To submit patches and new features for Marlin 1.1 check out the [bugfix-1.1.x](https://github.com/MarlinFirmware/Marlin/tree/bugfix-1.1.x) branch, add your commits, and submit a Pull Request back to the `bugfix-1.1.x` branch. Periodically that branch will form the basis for the next minor release.
+# [FR] ARTILLERY Genius
 
-Note that our "bugfix" branch will always contain the latest patches to the current release version. These patches may not be widely tested. As always, when using "nightly" builds of Marlin, proceed with full caution.
+![bmp_logo](https://user-images.githubusercontent.com/34917424/157289735-4eb28a53-dccc-4e58-89a4-f4ad5035ca97.png)
+ 
+## Steps/mm
 
-## Current Status: In Development
+Le réglage par défaut était à 80.121 en X et Y, 399.778 en Z et 445 en E.  
+Les valmeurs décimales n'apportaient pas plus de précision et de toute façon on calibre l'imprimante par M92 dans le GCode de démarrage.  
+En Z l'imprimante est équipée d'une vis sans fin et rien ne justifie une valeur de pas à décimales.  
+Des décimales injustifiées en Z mènent à des arrondis impossibles et une gestion du micropas qui nuit au bon fonctionnement de l'imprimante.  
+Dans le firmware j'ai modifié les réglages par défaut à {80,80,400,445}.  
 
-Marlin development has reached an important milestone with its first stable release in over 2 years. During this period we focused on cleaning up the code and making it more modern, consistent, readable, and sensible.
+## Augmenter la précision
 
-## Future Development
+Dans le firmware d'origine on trouve MIN_STEPS_PER_SEGMENT défini à 6.  
+Comme l'imprimante est à 80 pas par millimetre ça représente une précision de l'ordre de 0.075mm.  
+J'ai ramené cette valeur à 1 pour autoriser une définition de 0.0125mm.  
 
-Marlin 1.1 is the last "flat" version of Marlin!
+## Limiter les températures
 
-Arduino IDE now has support for folder hierarchies, so Marlin 1.2 will have a [hierarchical file structure](https://github.com/MarlinFirmware/Marlin/tree/breakup-marlin-idea). Marlin's newly reorganized code will be easier to work with and form a stronger starting-point as we get into [32-bit CPU support](https://github.com/MarlinFirmware/Marlin/tree/32-Bit-RCBugFix-new) and the Hardware Access Layer (HAL).
+Le firmware d'origine permet d'aller jusqu'à 150° sur le plateau et 275° sur la buse.  
+J'utilisais cette possibilité pour imprimer l'ABS (plateau à 135°) mais j'ai constaté que le matériel pouvait en souffrir à cause des surchauffes de l'électronique.  
+En pratique si on utilise des températures aussi hautes l'imprimante aura des comportements des plus étranges comme des tracés qui n'apparaissent pas dans le slicer parce qu'un des steppers s'est mis en sécurité.  
+On peut également constater que l'imprimante s'arrête mystérieusmeent au milieu d'une couche le temps que le matériel refroidisse.  
 
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/2224/badge.svg)](https://scan.coverity.com/projects/2224)
-[![Travis Build Status](https://travis-ci.org/MarlinFirmware/Marlin.svg)](https://travis-ci.org/MarlinFirmware/Marlin)
+Suite à cette expérience j'ai décidé de limiter la chauffe du plateau à 120° et à 260° sur la buse.  
 
-## Marlin Resources
+## Pourquoi pas de LIN_ADVANCE ?
 
-- [Marlin Home Page](http://marlinfw.org/) - The Marlin Documentation Project. Join us!
-- [RepRap.org Wiki Page](http://reprap.org/wiki/Marlin) - An overview of Marlin and its role in RepRap.
-- [Marlin Firmware Forum](http://forums.reprap.org/list.php?415) - Find help with configuration, get up and running.
-- [@MarlinFirmware](https://twitter.com/MarlinFirmware) on Twitter - Follow for news, release alerts, and tips & tricks. (Maintained by [@thinkyhead](https://github.com/thinkyhead).)
-
-## Credits
-
-The current Marlin dev team consists of:
- - Roxanne Neufeld [[@Roxy-3D](https://github.com/Roxy-3D)]
- - Scott Lahteine [[@thinkyhead](https://github.com/thinkyhead)]
- - Bob Kuhn [[@Bob-the-Kuhn](https://github.com/Bob-the-Kuhn)]
-
-Notable contributors include:
- - Alberto Cotronei [[@MagoKimbra](https://github.com/MagoKimbra)]
- - Andreas Hardtung [[@AnHardt](https://github.com/AnHardt)]
- - Bernhard Kubicek [[@bkubicek](https://github.com/bkubicek)]
- - Bob Cousins [[@bobc](https://github.com/bobc)]
- - Chris Palmer [[@nophead](https://github.com/nophead)]
- - David Braam [[@daid](https://github.com/daid)]
- - Edward Patel [[@epatel](https://github.com/epatel)]
- - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)]
- - Ernesto Martinez [[@emartinez167](https://github.com/emartinez167)]
- - F. Malpartida [[@fmalpartida](https://github.com/fmalpartida)]
- - Jochen Groppe [[@CONSULitAS](https://github.com/CONSULitAS)]
- - João Brazio [[@jbrazio](https://github.com/jbrazio)]
- - Kai [[@Kaibob2](https://github.com/Kaibob2)]
- - Luc Van Daele[[@LVD-AC](https://github.com/LVD-AC)]
- - Nico Tonnhofer [[@Wurstnase](https://github.com/Wurstnase)]
- - Petr Zahradnik [[@clexpert](https://github.com/clexpert)]
- - Thomas Moore [[@tcm0116](https://github.com/tcm0116)]
- - [[@alexxy](https://github.com/alexxy)]
- - [[@android444](https://github.com/android444)]
- - [[@benlye](https://github.com/benlye)]
- - [[@bgort](https://github.com/bgort)]
- - [[@ejtagle](https://github.com/ejtagle)]
- - [[@Grogyan](https://github.com/Grogyan)]
- - [[@marcio-ao](https://github.com/marcio-ao)]
- - [[@maverikou](https://github.com/maverikou)]
- - [[@oysteinkrog](https://github.com/oysteinkrog)]
- - [[@p3p](https://github.com/p3p)]
- - [[@paclema](https://github.com/paclema)]
- - [[@paulusjacobus](https://github.com/paulusjacobus)]
- - [[@psavva](https://github.com/psavva)]
- - [[@Tannoo](https://github.com/Tannoo)]
- - [[@teemuatlut](https://github.com/teemuatlut)]
- - ...and many others
-
-## License
-
-Marlin is published under the [GPL license](https://github.com/COPYING.md) because we believe in open development. The GPL comes with both rights and obligations. Whether you use Marlin firmware as the driver for your open or closed-source product, you must keep Marlin open, and you must provide your compatible Marlin source code to end users upon request. The most straightforward way to comply with the Marlin license is to make a fork of Marlin on Github, perform your modifications, and direct users to your modified fork.
-
-While we can't prevent the use of this code in products (3D printers, CNC, etc.) that are closed source or crippled by a patent, we would prefer that you choose another firmware or, better yet, make your own.
-
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/MarlinFirmware/Marlin&title=Marlin&language=&tags=github&category=software)
+Cette fonctioonalité est très séduisante et devait améliorer la qualité des impressions et j'ai donc essayé.  
+Malheureusement mes essais n'ont vraiment pas été couronnés de succès.  
+Peut être que la carte mère 8 bits ne dispose pas d'assez de puissance de calcul ou peut être que cette version de Marlin l'implémente mal mais je n'y suis pas arrivé.  
+J'avais activé le LIN_ADVANCE d'abord avec la valeur K définie dans le firmware puis avec K à 0 mais j'avais beau essayer et ré-essayer de calibrer correctement je n'ai constaté que des dégradations sur plusieurs tests.
+La simple activation de cette fonctionalité même avec K à 0 menait à des dysfonctionnements de l'imprimante qui touchaient même les menus de base : l'imprimante ne répondait plus à rien pendant plusieurs secondes et éxécutait les commandes avec retard.  
+J'ai essayé egalement avec la désactivation des arcs (ARC_SUPPORT G2 et G3) qui permet de récupérer plusieurs Kb mais ça n'a rien arrangé et ça amputait le firmware de fonctionalités qui peuvent être utiles.  
+Après plusieurs tests j'ai décidé de ne pas activer cette fonctionnalité.  
+Dans cette version ARC_SUPPORT est activé et LIN_ADVANCE non.  
